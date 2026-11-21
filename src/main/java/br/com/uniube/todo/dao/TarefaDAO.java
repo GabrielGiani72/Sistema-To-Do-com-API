@@ -1,106 +1,108 @@
 package br.com.uniube.todo.dao;
 
-import br.com.uniube.todo.config.ConexaoBD;
+import br.com.uniube.todo.config.ApiClient;
+import br.com.uniube.todo.config.LocalDateAdapter;
+import br.com.uniube.todo.config.RespostaApi;
 import br.com.uniube.todo.model.Tarefa;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.List;
 
+// Usa a API como intermediario para conexão BD usando comunivação via cod HTTP
 
 public class TarefaDAO {
 
-    private final ConexaoBD banco;
+    private final ApiClient api;
+
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, LocalDateAdapter.SERIALIZER)
+            .registerTypeAdapter(LocalDate.class, LocalDateAdapter.DESERIALIZER)
+            .create();
 
     public TarefaDAO() {
-        this.banco = ConexaoBD.getInstance();
+        this.api = ApiClient.getInstance();
     }
 
-    //Busca todas as tarefas cadastradas
+    //GET /tarefas
     public List<Tarefa> listarTodas() {
-        String sql = "SELECT id, titulo, descricao, concluida, data_criacao "
-                + "FROM tarefas ORDER BY data_criacao DESC, id DESC";
+        RespostaApi resposta = this.api.enviar("GET", "/tarefas", null);
 
-        List<Tarefa> lista = new ArrayList<>();
-        try (ResultSet rs = this.banco.executar(sql)) {
-            while (rs.next()) {
-                lista.add(this.mapear(rs));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar tarefas.", e);
+        if (resposta.getStatus() == 200) {
+            Type tipoLista = new TypeToken<List<Tarefa>>() { }.getType();
+            return gson.fromJson(resposta.getCorpo(), tipoLista);
         }
-        return lista;
+        throw this.erroInesperado("listar tarefas", resposta);
     }
 
-    //Busca uma única tarefa pelo id. Retorna null se não existir.
+    //GET /tarefas/{id}  (retorna null se não existir)
     public Tarefa buscarPorId(int id) {
-        String sql = "SELECT id, titulo, descricao, concluida, data_criacao "
-                + "FROM tarefas WHERE id = ?";
+        RespostaApi resposta = this.api.enviar("GET", "/tarefas/" + id, null);
 
-        try (ResultSet rs = this.banco.executar(sql, id)) {
-            if (rs.next()) {
-                return this.mapear(rs);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar tarefa por id.", e);
+        if (resposta.getStatus() == 200) {
+            return gson.fromJson(resposta.getCorpo(), Tarefa.class);
         }
-        return null;
+        if (resposta.getStatus() == 404) {
+            return null;
+        }
+        throw this.erroInesperado("buscar tarefa", resposta);
     }
 
-    //Insere uma nova tarefa no banco
+
     public void inserir(Tarefa tarefa) {
-        String sql = "INSERT INTO tarefas (titulo, descricao, concluida, data_criacao) "
-                + "VALUES (?, ?, ?, ?)";
+        RespostaApi resposta = this.api.enviar("POST", "/tarefas", gson.toJson(tarefa));
 
-        try {
-            this.banco.executarUpdate(
-                    sql,
-                    tarefa.getTitulo(),
-                    tarefa.getDescricao(),
-                    tarefa.isConcluida(),
-                    Date.valueOf(tarefa.getDataCriacao()));
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao inserir tarefa.", e);
+        if (resposta.getStatus() == 201) {
+            Tarefa criada = gson.fromJson(resposta.getCorpo(), Tarefa.class);
+            tarefa.setId(criada.getId());
+            tarefa.setDataCriacao(criada.getDataCriacao());
+            return;
         }
+        if (resposta.getStatus() == 400) {
+            throw new IllegalArgumentException(this.lerErro(resposta));
+        }
+        throw this.erroInesperado("inserir tarefa", resposta);
     }
 
-    //Atualiza os dados de uma tarefa já existente (identificada pelo id)
     public void alterar(Tarefa tarefa) {
-        String sql = "UPDATE tarefas SET titulo = ?, descricao = ?, concluida = ? "
-                + "WHERE id = ?";
+        RespostaApi resposta = this.api.enviar("PUT", "/tarefas/" + tarefa.getId(), gson.toJson(tarefa));
 
-        try {
-            this.banco.executarUpdate(
-                    sql,
-                    tarefa.getTitulo(),
-                    tarefa.getDescricao(),
-                    tarefa.isConcluida(),
-                    tarefa.getId());
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao alterar tarefa.", e);
+        if (resposta.getStatus() == 200) {
+            return;
         }
+        if (resposta.getStatus() == 400 || resposta.getStatus() == 404) {
+            throw new IllegalArgumentException(this.lerErro(resposta));
+        }
+        throw this.erroInesperado("alterar tarefa", resposta);
     }
 
-    //Remove uma tarefa do banco pelo id
     public void deletar(int id) {
-        String sql = "DELETE FROM tarefas WHERE id = ?";
+        RespostaApi resposta = this.api.enviar("DELETE", "/tarefas/" + id, null);
 
+        if (resposta.getStatus() == 204) {
+            return;
+        }
+        if (resposta.getStatus() == 404) {
+            throw new IllegalArgumentException(this.lerErro(resposta));
+        }
+        throw this.erroInesperado("deletar tarefa", resposta);
+    }
+
+    private String lerErro(RespostaApi resposta) {
         try {
-            this.banco.executarUpdate(sql, id);
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao deletar tarefa.", e);
+            JsonObject json = gson.fromJson(resposta.getCorpo(), JsonObject.class);
+            return json.get("erro").getAsString();
+        } catch (JsonSyntaxException | NullPointerException e) {
+            return "Erro na requisição (status " + resposta.getStatus() + ").";
         }
     }
 
-    private Tarefa mapear(ResultSet rs) throws SQLException {
-        Tarefa tarefa = new Tarefa();
-        tarefa.setId(rs.getInt("id"));
-        tarefa.setTitulo(rs.getString("titulo"));
-        tarefa.setDescricao(rs.getString("descricao"));
-        tarefa.setConcluida(rs.getBoolean("concluida"));
-        tarefa.setDataCriacao(rs.getDate("data_criacao").toLocalDate());
-        return tarefa;
+    private RuntimeException erroInesperado(String acao, RespostaApi resposta) {
+        return new RuntimeException("Erro ao " + acao + " (a API respondeu " + resposta.getStatus() + ").");
     }
 }

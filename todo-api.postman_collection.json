@@ -1,0 +1,205 @@
+{
+  "info": {
+    "name": "API To-Do - Tarefas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Login (rode primeiro)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/login"
+        },
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"admin\",\n  \"senha\": \"123456\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set(\"token\", pm.response.json().token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar tarefas",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas"
+        }
+      }
+    },
+    {
+      "name": "Buscar tarefa por id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas/1"
+        }
+      }
+    },
+    {
+      "name": "Criar tarefa",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Estudar REST\",\n  \"descricao\": \"Revisar os verbos HTTP\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Atualizar tarefa (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas/1"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Estudar REST (editado)\",\n  \"descricao\": \"Revisar status codes\",\n  \"concluida\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "Atualizar parcial (PATCH)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas/1"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"concluida\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "Excluir tarefa",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas/1"
+        }
+      }
+    },
+    {
+      "name": "Criar sem titulo (erro 400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"descricao\": \"sem titulo\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Buscar id inexistente (erro 404)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas/9999"
+        }
+      }
+    },
+    {
+      "name": "Sem token (erro 401)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/tarefas"
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    }
+  ]
+}

@@ -7,7 +7,7 @@ public class Tarefa {
     private String titulo;
     private boolean concluida;
     private String descricao;
-    private LocalDate datacriacao;
+    private LocalDate dataCriacao;
 
     public Tarefa(){
 
@@ -18,7 +18,7 @@ public class Tarefa {
         this.titulo = titulo;
         this.descricao = descricao;
         this.concluida = false;
-        this.datacriacao = LocalDate.now();
+        this.dataCriacao = LocalDate.now();
     }
  
     // Construtor completo
@@ -27,7 +27,7 @@ public class Tarefa {
         this.titulo = titulo;
         this.descricao = descricao;
         this.concluida = concluida;
-        this.datacriacao = dataCriacao;
+        this.dataCriacao = dataCriacao;
     }
  
     public int getId() {
@@ -63,11 +63,11 @@ public class Tarefa {
     }
  
     public LocalDate getDataCriacao() {
-        return datacriacao;
+        return dataCriacao;
     }
  
     public void setDataCriacao(LocalDate dataCriacao) {
-        this.datacriacao = dataCriacao;
+        this.dataCriacao = dataCriacao;
     }
  
     @Override

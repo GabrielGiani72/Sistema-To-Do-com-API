@@ -1,8 +1,9 @@
 # Pasta gerada pelo Maven ao compilar (mvn package)
 target/
 
-# WAR gerado (o Tomcat via Docker usa isso, mas não precisa versionar)
-deploy/*.war
+# Pastas de deploy (WAR e pasta explodida que o Tomcat cria)
+deploy/
+deploy-api/
 
 # Arquivos de configuração da IDE (variam de máquina pra máquina)
 .vscode/

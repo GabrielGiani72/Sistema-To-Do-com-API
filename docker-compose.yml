@@ -17,6 +17,20 @@ services:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  api:
+    image: tomcat:10.1-jdk21
+    container_name: todo-api
+
+    ports:
+      - "8081:8080"
+
+    volumes:
+      - ./deploy-api:/usr/local/tomcat/webapps
+
+    depends_on:
+      - mysql
+
+ 
   tomcat:
     image: tomcat:10.1-jdk21
     container_name: todo-tomcat
@@ -28,7 +42,7 @@ services:
       - ./deploy:/usr/local/tomcat/webapps
 
     depends_on:
-      - mysql
+      - api
 
 volumes:
   mysql_data:
