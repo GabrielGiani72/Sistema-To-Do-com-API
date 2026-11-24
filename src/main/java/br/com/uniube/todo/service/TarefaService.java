@@ -5,11 +5,8 @@ import java.util.List;
 
 /**
  * SERVICE do sistema web.
- *
- * As regras de negócio (título obrigatório, tamanho máximo, data de criação)
- * agora ficam na API, que é quem trata os dados. Aqui só decidimos qual
- * operação chamar. Se a API recusar, o DAO lança IllegalArgumentException
- * e o TarefaServlet mostra a mensagem na tela, como antes.
+ * Regras ficam na API. Tarefa Service só escolhe qual opção da API chamar 
+ * e trata recursa com mensagem amigavel
  */
 public class TarefaService {
 

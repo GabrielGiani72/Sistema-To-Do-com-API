@@ -6,10 +6,6 @@ import com.google.gson.JsonSerializer;
 
 import java.time.LocalDate;
 
-/**
- * O Gson não sabe converter LocalDate sozinho.
- * Aqui ensinamos: LocalDate <-> texto no formato "2026-11-04".
- */
 public class LocalDateAdapter {
 
     //LocalDate -> JSON

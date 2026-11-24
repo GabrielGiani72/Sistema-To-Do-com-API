@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.List;
 
-// Usa a API como intermediario para conexão BD usando comunivação via cod HTTP
+// Usa a API como intermediario para conexão BD usando comunicação via código HTTP
 
 public class TarefaDAO {
 

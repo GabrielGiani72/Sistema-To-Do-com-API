@@ -17,7 +17,7 @@ public class TarefaDAO {
         this.banco = ConexaoBD.getInstance();
     }
 
-    // Busca todas as tarefas cadastradas das mais recentes para as mais antigas
+    // Busca todas as tarefas cadastradas
 
     public List<Tarefa> listarTodas() {
         String sql = "SELECT id, titulo, descricao, concluida, data_criacao "
@@ -34,7 +34,7 @@ public class TarefaDAO {
         return lista;
     }
 
-    //Busca uma única tarefa pelo id retornando null se não existir
+    //Busca uma única tarefa pelo id 
 
     public Tarefa buscarPorId(int id) {
         String sql = "SELECT id, titulo, descricao, concluida, data_criacao "
@@ -50,7 +50,7 @@ public class TarefaDAO {
         return null;
     }
 
-    //Insere uma nova tarefa no banco
+    //Insere uma nova tarefa 
     public void inserir(Tarefa tarefa) {
         String sql = "INSERT INTO tarefas (titulo, descricao, concluida, data_criacao) "
                 + "VALUES (?, ?, ?, ?)";
@@ -62,14 +62,14 @@ public class TarefaDAO {
                     tarefa.getDescricao(),
                     tarefa.isConcluida(),
                     Date.valueOf(tarefa.getDataCriacao()));
-            //Guarda o id gerado na própria tarefa (a API devolve ele no POST)
+            //Guarda o id gerado na própria tarefa 
             tarefa.setId(idGerado);
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir tarefa.", e);
         }
     }
 
-    //Atualiza os dados de uma tarefa já existente (identificada pelo id)
+    //Atualiza os dados de uma tarefa existente
 
     public void alterar(Tarefa tarefa) {
         String sql = "UPDATE tarefas SET titulo = ?, descricao = ?, concluida = ? "

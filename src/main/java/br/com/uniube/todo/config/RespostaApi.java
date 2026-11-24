@@ -1,7 +1,7 @@
 package br.com.uniube.todo.config;
 
 /**
- * Guarda o que a API respondeu: o código HTTP (200, 400, 404...) e o JSON do corpo.
+ * Guarda o que a resposta da API e o Json do corpo
  */
 public class RespostaApi {
 

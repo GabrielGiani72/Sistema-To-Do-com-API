@@ -7,16 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Classe responsável por abrir e reaproveitar a conexão com o MySQL.
- *
- * Usa o padrão Singleton: só existe UMA instância dessa classe
- * em todo o sistema, evitando abrir conexões demais com o banco.
- *
- * IMPORTANTE: o host "mysql" abaixo é o nome do serviço definido
- * no docker-compose.yml — não é "localhost" porque a aplicação
- * roda dentro do container do Tomcat, e o MySQL está em outro container.
- */
+//Classe abre e realiza conexão com o MYsql
 public class ConexaoBD {
 
     private static final String URL =
@@ -49,9 +40,7 @@ public class ConexaoBD {
         return this.conexao;
     }
 
-    /**
-     * Usado para SELECT — retorna um ResultSet com os dados encontrados.
-     */
+
     public ResultSet executar(String sql, Object... parametros) throws SQLException {
         Connection conn = this.obterConexao();
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -61,9 +50,6 @@ public class ConexaoBD {
         return ps.executeQuery();
     }
 
-    /**
-     * Usado para INSERT/UPDATE/DELETE — retorna quantas linhas foram afetadas.
-     */
     public int executarUpdate(String sql, Object... parametros) throws SQLException {
         Connection conn = this.obterConexao();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -74,9 +60,6 @@ public class ConexaoBD {
         }
     }
 
-    /**
-     * Usado para INSERT quando precisamos do id que o banco gerou (AUTO_INCREMENT).
-     */
     public int executarInsert(String sql, Object... parametros) throws SQLException {
         Connection conn = this.obterConexao();
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

@@ -19,26 +19,19 @@ import java.time.LocalDate;
 import java.util.Map;
 
 /**
-  Controller da API REST.
-  GET    -> lista todas
-  GET    -> busca uma
-  POST   -> cria
-  PUT     -> atualiza
-  PATCH   -> atualiza só os campos enviados
-  DELETE -> remove
+  Controller com CRUD da API REST via GET, POST...
  */
 @WebServlet("/api/tarefas/*")
 public class TarefaApiServlet extends HttpServlet {
 
     private final TarefaService tarefaService = new TarefaService();
 
-    //Gson com o adaptador de data registrado
+    //Gson com o adaptador de data
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, LocalDateAdapter.SERIALIZER)
             .registerTypeAdapter(LocalDate.class, LocalDateAdapter.DESERIALIZER)
             .create();
 
-    //Roda antes de qualquer doGet e doPost configura o JSON e trata os erros
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -162,7 +155,7 @@ public class TarefaApiServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    //Pega o id da URL sem id retorna null
+
     private Integer lerId(HttpServletRequest req) {
         String path = req.getPathInfo();
         if (path == null || path.equals("/")) {
@@ -175,12 +168,11 @@ public class TarefaApiServlet extends HttpServlet {
         }
     }
 
-    //Lê um texto do JSON
+
     private String lerTexto(JsonElement elemento) {
         return elemento.isJsonNull() ? null : elemento.getAsString();
     }
 
-    //Converte o JSON do corpo da requisição em um objeto Tarefa
     private Tarefa lerCorpo(HttpServletRequest req) throws IOException {
         Tarefa tarefa = gson.fromJson(req.getReader(), Tarefa.class);
         if (tarefa == null) {
@@ -189,7 +181,7 @@ public class TarefaApiServlet extends HttpServlet {
         return tarefa;
     }
 
-    //Responde erro
+
     private void enviarErro(HttpServletResponse resp, int status, String mensagem) throws IOException {
         resp.setStatus(status);
         resp.getWriter().write(gson.toJson(Map.of("erro", mensagem)));

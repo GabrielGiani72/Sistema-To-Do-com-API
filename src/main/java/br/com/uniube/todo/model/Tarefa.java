@@ -21,7 +21,6 @@ public class Tarefa {
         this.dataCriacao = LocalDate.now();
     }
  
-    // Construtor completo
     public Tarefa(int id, String titulo, String descricao, boolean concluida, LocalDate dataCriacao) {
         this.id = id;
         this.titulo = titulo;

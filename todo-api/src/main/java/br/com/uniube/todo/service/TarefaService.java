@@ -7,10 +7,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * SERVICE de Tarefa — regras de negócio ficam aqui.
- *
- * O Controller só chama estes métodos e decide qual view mostrar.
- * O DAO só executa SQL, sem validar nada.
+ * 
+ * Regras de negocio agora ficam aqui e são chamadas pelo controller
  */
 public class TarefaService {
 
@@ -33,12 +31,6 @@ public class TarefaService {
         return this.tarefaDAO.buscarPorId(id);
     }
 
-    /**
-     * Regra de salvamento:
-     * - sem id -> cadastro novo (define a data de criação automaticamente)
-     * - com id -> alteração (a tarefa precisa existir)
-     * - título é obrigatório e tem tamanho máximo
-     */
     public void salvar(Tarefa tarefa) {
         if (tarefa == null) {
             throw new IllegalArgumentException("Tarefa é obrigatória.");
@@ -59,11 +51,6 @@ public class TarefaService {
         this.tarefaDAO.alterar(tarefa);
     }
 
-    /**
-     * Regra de exclusão:
-     * - id obrigatório
-     * - a tarefa precisa existir
-     */
     public void deletar(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("Id é obrigatório para excluir.");
@@ -74,9 +61,7 @@ public class TarefaService {
         this.tarefaDAO.deletar(id);
     }
 
-    /**
-     * Alterna o status de concluída/pendente de uma tarefa existente.
-     */
+
     public void alternarConcluida(Integer id) {
         Tarefa tarefa = this.buscarPorId(id);
         if (tarefa == null) {

@@ -13,10 +13,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * POST /api/login
- * Recebe {"usuario": "...", "senha": "..."} e devolve {"token": "..."}.
- *
- * Para manter simples, existe um único usuário fixo no código.
+ * 
+ * Recebe usuario e senha, ja direto no código, e devolve token
  */
 @WebServlet("/api/login")
 public class LoginServlet extends HttpServlet {

@@ -132,7 +132,7 @@ Códigos de resposta
 401 -> token ausente, inválido ou expirado
 404 -> tarefa não encontrada
 
-Erros vêm sempre no formato:
+Padrão de retorno:
 
 json
 { "erro": "O título da tarefa é obrigatório." }

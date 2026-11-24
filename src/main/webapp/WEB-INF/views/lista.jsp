@@ -15,7 +15,7 @@
     <a class="btn-nova" href="${pageContext.request.contextPath}/tarefas?acao=novo">+ Nova Tarefa</a>
 
     <c:if test="${empty tarefas}">
-        <p>Nenhuma tarefa cadastrada ainda.</p>
+        <p>Nenhuma tarefa cadastrada</p>
     </c:if>
 
     <c:if test="${not empty tarefas}">

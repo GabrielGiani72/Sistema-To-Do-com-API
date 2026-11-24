@@ -14,11 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Filtro que protege /api/tarefas/*.
- * Roda ANTES do TarefaApiServlet: se o token for inválido, responde 401
- * e a requisição nem chega no servlet.
- *
- * O cliente envia:  Authorization: Bearer <token>
+ * Valida token. Caso invalido lança 401
  */
 @WebFilter("/api/tarefas/*")
 public class AuthFilter implements Filter {

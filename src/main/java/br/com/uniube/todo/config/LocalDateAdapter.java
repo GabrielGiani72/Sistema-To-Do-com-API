@@ -5,7 +5,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import java.time.LocalDate;
 
-//Adapter para ensinar Gson a converter data
+//Adapter Gson a converter data
 
 public class LocalDateAdapter {
 

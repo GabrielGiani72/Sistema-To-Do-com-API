@@ -64,7 +64,7 @@ public class TarefaServlet extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");
 
-        // Monta o objeto Tarefa a partir dos campos do formulário
+        // Monta o objeto Tarefa a partir do formulário
         Tarefa tarefa = new Tarefa();
         String idTexto = req.getParameter("id");
         if (idTexto != null && !idTexto.isBlank()) {
